@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-
-//import fontawesome from '@fortawesome/fontawesome'
+//import MovieList from "./MovieList";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,16 +12,10 @@ import {
   faTimes,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-
-
-//import axios from 'axios';
-
-//import { faBars} from '@fortawesome/fontawesome-free-solid'
 
 library.add(faBars, faTimes, faMagnifyingGlass);
 
-const Nav = () => {
+const Nav = ({ setMovieSearch }) => {
   function openMenu() {
     document.body.classList += " menu--open";
   }
@@ -33,49 +26,34 @@ const Nav = () => {
 
   const [movies, setMovies] = useState([]);
 
-  const textInput = document.getElementById('searchInput');
+  const textInput = document.getElementById("searchInput");
 
   console.log("text input", textInput);
 
-  const movieList = document.querySelector(".movies");
+  const handleInputChange = (event) => {
+    setMovies(event.target.value);
+  };
 
-  if (textInput){
-  textInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      console.log('Enter key pressed!', event.target.value);
-  
-      let movie = event.target.value;
-      searchMovies(movie);
-    }
-  });
-}
+  if (textInput) {
+    textInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        searchMovies(event.target.value);
+      }
+    });
+  }
 
-
-
-  async function searchMovies(movie) {
-
-    console.log("hit searchmovies funciton")
-
-    const { data } = await axios.get(
-       `http://www.omdbapi.com/?i=tt3896198&apikey=cc6cc917&s=${movie}`
-    );
-
-    console.log("movie results", data);
-    setMovies(data);
-
-
+  function searchMovies() {
+    setMovieSearch(document.getElementById("searchInput").value);
   }
 
   return (
     <div className="navbar">
       <nav>
         <div className="nav__container">
-        <div className="logo">
-          <Link to="/">
-            
+          <div className="logo">
+            <Link to="/">
               <img src={MovieLogo} alt="" className="logo" />
-          
-          </Link>
+            </Link>
           </div>
           <ul className="nav__links">
             <li className="nav__list">
@@ -128,8 +106,9 @@ const Nav = () => {
           <input
             type="text"
             id="searchInput"
-            name="searchInput"
             placeholder="Search by Title, Actor(ess), or Keyword"
+            value={movies}
+            onChange={(e) => handleInputChange(e)}
           />
           <div class="search-wrapper">
             <FontAwesomeIcon
@@ -139,11 +118,9 @@ const Nav = () => {
           </div>
         </div>
       </div>
-     
+
       <div class="overlay"></div>
-    
     </div>
-   
   );
 };
 
